@@ -1,0 +1,26 @@
+== 接口返回数据结构说明
+
+=== 不分页接口返回数据结构
+[source,json]
+----
+{
+    "resCode":"0000",
+    "reDesc":"操作成功",
+    "data":"Object"
+}
+----
+
+
+=== 分页接口返回数据结构
+[source,json]
+----
+{
+    "resCode":"0000",
+    "reDesc":"操作成功",
+    "iPage":"1",
+    "pageSize":"20",
+    "totalRecode":"100",
+    "resultList":"Array"
+}
+----
+
