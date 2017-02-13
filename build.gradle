@@ -27,11 +27,17 @@ apply plugin: 'org.ajoberstar.github-pages'
 
 
 ext {
+    encode = "UTF-8"
+
     asciiDocOutputDir = file("${buildDir}/asciidoc/generated")
     swaggerOutputDir = file("${buildDir}/swagger")
     filename = "swagger.json"
-//    swaggerHost = "http://10.52.2.170:7002/v2/api-docs?group=%E5%86%85%E9%83%A8%E6%8E%A5%E5%8F%A3"
-    swaggerHost = "http://10.52.2.170:7002/v2/api-docs?group=%E5%A4%96%E9%83%A8%E6%8E%A5%E5%8F%A3"
+    swaggerVersion = "v2"
+    swaggerPath = "api-docs"
+
+    apiLocatoin = "http://localhost:8080"
+    apiGroup = "内部接口"
+
 }
 
 task generateJsonFile << {
@@ -40,8 +46,11 @@ task generateJsonFile << {
         json.mkdirs()
     }
     json = file("${swaggerOutputDir}/${filename}")
-    "${swaggerHost}".toURL().eachLine("UTF-8") {
-        json.append(it, "UTF-8")
+    def group = java.net.URLEncoder.encode(apiGroup, encode)
+    def swaggerHost = "${apiLocatoin}/${swaggerVersion}/${swaggerPath}?group=${group}"
+    println swaggerHost
+    "${swaggerHost}".toURL().eachLine(encode) {
+        json.append(it, encode)
     }
 }
 
@@ -78,3 +87,4 @@ asciidoctor {
             'toc-title'         : '目录'
     ]
 }
+
