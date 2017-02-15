@@ -1,0 +1,9 @@
+== 变更记录
+
+=== 接口变更记录
+
+|===
+|序号|变更接口|变更日期|备注
+
+|1 |<<_accountinfousingget,个人信息接口>>|2017-2-15 11:29:13|增加payPasswordStatus、realNameAuthStatus、bindBankCardStatus字段，修改bankCardNum的值为隐藏后(带星号)的值
+|===

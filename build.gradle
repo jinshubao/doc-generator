@@ -11,6 +11,7 @@ buildscript {
         classpath 'io.github.swagger2markup:swagger2markup-spring-restdocs-ext:1.2.0'
         classpath 'io.github.swagger2markup:swagger2markup-gradle-plugin:1.2.0'
         classpath "org.ajoberstar:gradle-git:1.5.1"
+        classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.10.1'
     }
 }
 
@@ -30,27 +31,95 @@ ext {
     encode = "UTF-8"
 
     asciiDocOutputDir = file("${buildDir}/asciidoc/generated")
+    fonts = file("src/font")
     swaggerOutputDir = file("${buildDir}/swagger")
     filename = "swagger.json"
     swaggerVersion = "v2"
     swaggerPath = "api-docs"
 
-    apiLocatoin = "http://localhost:8080"
-    apiGroup = "内部接口"
-
+    apiLocatoin = "http://10.52.2.170:7002"
+//    apiGroup = "内部接口"
+    apiGroup = ""
 }
 
+
 task generateJsonFile << {
-    def json = file(swaggerOutputDir)
-    if (!json.exists()) {
-        json.mkdirs()
+    def toJson = { url ->
+        def array = url.toString().split("\\?")
+        def params = []
+        if (array && array.length > 1) {
+            def param = array[1]
+            def ps = param.split("&")
+            if (ps) {
+                ps.each {
+                    def pls = it.split("=")
+                    if (pls && pls.length > 1) {
+                        params << pls[0] + "=" + java.net.URLEncoder.encode(pls[1], encode as String)
+                    }
+                }
+            }
+        }
+        def newUrl = array[0]
+        if (params) {
+            newUrl += "?"
+            newUrl += params.join("&")
+        }
+
+        def builder = new StringBuilder()
+        println "URL:${newUrl}"
+        newUrl.toURL().eachLine(encode as String) {
+            builder << it
+        }
+        return builder.toString()
     }
-    json = file("${swaggerOutputDir}/${filename}")
-    def group = java.net.URLEncoder.encode(apiGroup, encode)
-    def swaggerHost = "${apiLocatoin}/${swaggerVersion}/${swaggerPath}?group=${group}"
-    println swaggerHost
-    "${swaggerHost}".toURL().eachLine(encode) {
-        json.append(it, encode)
+
+    def jsonFile = file(swaggerOutputDir)
+    if (!jsonFile.exists()) {
+        jsonFile.mkdirs()
+    }
+    jsonFile = file("${swaggerOutputDir}/${filename}")
+    def swaggerHost = "${apiLocatoin}/swagger-resources"
+    def resources = toJson(swaggerHost)
+    new URL(swaggerHost).eachLine(encode as String) {
+        resources << it.toString()
+    }
+    def resList = new groovy.json.JsonSlurper().parseText(resources.toString()) as List
+
+    def list = []
+    for (int i = 0; i < resList.size(); i++) {
+        if (apiGroup) {
+            if (apiGroup == resList[i].name) {
+                list << toJson("${apiLocatoin}${resList[i].location}")
+                break
+            }
+        } else {
+            def location = "${apiLocatoin}${resList[i].location}"
+            list << toJson(location)
+        }
+    }
+    if (list) {
+        def dft = new groovy.json.JsonSlurper().parseText(list[0]) as Map
+        if (list.size() > 1) {
+            for (int i = 1; i < list.size(); i++) {
+                def temp = new groovy.json.JsonSlurper().parseText(list[i]) as Map
+                def ls = []
+                (temp.tags as List).each() { t ->
+                    def ct = false
+                    (dft.tags as List).each { d ->
+                        if (t.name == d.name) {
+                            ct = true
+                        }
+                    }
+                    if (!ct) {
+                        ls << t
+                    }
+                }
+                dft.tags += ls
+                dft.paths += temp.paths
+                dft.definitions += temp.definitions
+            }
+        }
+        jsonFile << groovy.json.JsonOutput.toJson(dft)
     }
 }
 
@@ -73,7 +142,7 @@ asciidoctor {
     sources {
         include 'index.adoc'
     }
-    backends = ['html5']
+    backends = ['html5', 'pdf']
     attributes = [
             doctype             : 'book',
             toc                 : 'left',
@@ -84,7 +153,8 @@ asciidoctor {
             hardbreaks          : '',
             generated           : asciiDocOutputDir,
             'source-highlighter': 'coderay',
-            'toc-title'         : '目录'
+            'toc-title'         : '目录',
+            'pdf-fontsdir'      : 'fonts'
     ]
 }
 

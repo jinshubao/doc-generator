@@ -13,7 +13,7 @@
 {
     "resCode":"0000",
     "reDesc":"操作成功",
-    "data":"Object"
+    "data":{}
 }
 ----
 
@@ -23,10 +23,10 @@
 {
     "resCode":"0000",
     "reDesc":"操作成功",
-    "iPage":"1",
-    "pageSize":"20",
-    "totalRecode":"100",
-    "resultList":"Array"
+    "iPage":1,
+    "pageSize":20,
+    "totalRecode":55,
+    "resultList":[]
 }
 ----
 
