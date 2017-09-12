@@ -20,7 +20,7 @@ version '2.0'
 
 apply plugin: 'groovy'
 apply plugin: 'java'
-apply plugin: 'spring-boot'
+apply plugin: 'org.springframework.boot'
 apply plugin: 'org.asciidoctor.convert'
 apply plugin: 'io.github.swagger2markup'
 apply plugin: 'io.spring.dependency-management'
@@ -37,9 +37,9 @@ ext {
     swaggerVersion = "v2"
     swaggerPath = "api-docs"
 
-    apiLocatoin = "http://10.52.2.170:7002"
+    apiLocatoin = "http://10.52.2.203:7011"
 //    apiGroup = "内部接口"
-    apiGroup = ""
+    apiGroup = "V2.6.0更新接口"
 }
 
 
@@ -119,6 +119,20 @@ task generateJsonFile << {
                 dft.definitions += temp.definitions
             }
         }
+        def idx = 1
+        dft.paths.each { path, df ->
+            if (df) {
+                df.each { method, detail ->
+                    if (detail) {
+                        if (detail.operationId) {
+                            detail.operationId = path.replaceAll("/","_") + "_" + method
+                            println "|${idx++} |<<${detail.operationId},${detail.description}>>|${detail.description}"
+                        }
+                    }
+                }
+            }
+        }
+
         jsonFile << groovy.json.JsonOutput.toJson(dft)
     }
 }
@@ -143,6 +157,7 @@ asciidoctor {
         include 'index.adoc'
     }
     backends = ['html5', 'pdf']
+//    backends = ['html5']
     attributes = [
             doctype             : 'book',
             toc                 : 'left',

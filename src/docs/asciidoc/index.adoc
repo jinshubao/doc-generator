@@ -1,6 +1,6 @@
 include::{generated}/overview.adoc[]
 include::manual.adoc[]
-include::records-v2.1.adoc[]
+include::records-V2.6.0.adoc[]
 include::{generated}/paths.adoc[]
 include::{generated}/security.adoc[]
 include::{generated}/definitions.adoc[]

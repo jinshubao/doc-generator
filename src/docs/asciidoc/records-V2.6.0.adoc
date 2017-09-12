@@ -1,0 +1,34 @@
+== 变更记录
+
+=== 接口变更记录
+
+|===
+|序号|变更接口|备注
+
+|1 |<<_api_accountInvest_loan_contract_get,获取债权合同>>|删除
+|2 |<<_api_accountInvest_payBackList_get,查询用户投资的回款记录>>|删除
+|3 |<<_api_acct_center_get,账户中心>>|增加投资统计，下笔回款日期和金额
+|4 |<<_api_acct_invest_get,投资列表>>|新增接口
+|5 |<<_api_acct_invest_detail_get,投资详情>>|新增接口
+|6 |<<_api_config_getCashIn_get,变现标参数>>|新增接口
+|7 |<<_api_config_setTransfer_get,转让标参数设置>>|去除转让费率
+|8 |<<_api_investOrder_add_post,投资下单接口>>|底层逻辑修改，新增长赢计划
+|9 |<<_api_investOrder_addPay_post,投资下单支付接口>>|底层逻辑修改，新增长赢计划
+|10 |<<_api_product_detail_get,产品详情>>|增加变现阶梯利率，增加历史收益率字段，增加债权转让协议链接，增加风险提示书链接
+|11 |<<_api_product_index_get,首页产品列表>>|首页产品列表
+|12 |<<_api_product_list_get,产品列表>>|增加长赢计划标，增加锁定期字段，增加历史收益率字段
+|13 |<<_api_transfer_apply_post,债权转让/变现申请>>|债权转让申请修改，删除转让债权字段，新增转让类型字段
+|14 |<<_api_transfer_calc_get,债权转让/变现计算>>|债权转让计算修改，删除转让债权字段，新增转让类型字段
+|15 |<<_api_transfer_cancel_post,债权转让/变现取消>>|修改转让取消接口，新增转让类型字段
+|16 |<<_api_transfer_detail_get,债权转让/变现详情（转让中，已转让）>>|新增接口
+|17 |<<_api_transfer_isTransfer_get,债权转让/变现判断>>|新增接口
+|18 |<<_api_transfer_list_get,用户投资的债权转让列表>>|新增接口
+|19 |<<_api_user_gesturepassword_adjust_post,修改手势密码状态>>|修改手势密码状态接口，登录密码解密
+|20 |<<_api_user_login_post,用户登录功能>>|增强密码安全性
+|21 |<<_api_user_loginpassword_find_post,找回登陆密码>>|增强密码安全性
+|22 |<<_api_user_loginpassword_reset_post,重置登陆密码>>|增强密码安全性
+|23 |<<_api_user_register_post,用户注册>>|增加注册幂等和增强密码安全性
+|24 |<<_inner_order_creditorEndNotice_post,债权结束通知接口>>|新增接口
+|25 |<<_inner_order_purchase_post,风控债权购买通知接口>>|债权购买通知
+|26 |<<_inner_order_repayment_post,线下还款通知接口，最后一次还款结束通知>>|线下还款通知接口，最后一次还款结束通知
+|===
